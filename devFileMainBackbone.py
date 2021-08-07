@@ -59,8 +59,9 @@ startMomentTime = 0.0
 
 
 # this stuff for the actual eye blinking part
-eyeArThresh = 0.3 #if this is too high, might get hard to detect blinks
-eyeArConsecFrames = 3
+eyeArThresh = 0.24 #if this is too high, might get hard to detect blinks       #used to be 0.3, need to change
+
+eyeArConsecFrames = 2
 
 #define some constants for the windows part, gonna try detecting a fast blink
 fastBlink = 2
@@ -156,10 +157,13 @@ while True:
 
     #loop over the face detections
     for rect in rects:
-       
+        # determine the facial landmarks for the face region, then
+        # convert the facial landmark (x, y)-coordinates to a NumPy
+        # array
         shape = predictor(gray, rect)
         shape = face_utils.shape_to_np(shape)
-      
+        # extract the left and right eye coordinates, then use the
+        # coordinates to compute the eye aspect ratio for both eyes
         leftEye = shape[lStart:lEnd]
         rightEye = shape[rStart:rEnd]
         leftEAR = eye_aspect_ratio(leftEye)
@@ -197,7 +201,7 @@ while True:
 
 
                     for x in timeDifferenceList[-3:]:
-                        print("the x value is", x)
+                        #print("the x value is", x)
                         # lets evaluate the values RIGHT NOW
                         # if x is a certain value, add one to a "single", "double", or "triple" counter
                         if x >= 1.15:
@@ -214,16 +218,19 @@ while True:
                         timeDifferenceList = timeDifferenceList[:-1]
                         print("the current list is", *timeDifferenceList)
 
+
                     elif double > single and double > triple:
                         print("double blink detected")
                         timeDifferenceList = timeDifferenceList[:-1]
                         print("the current list is", *timeDifferenceList)
+                        printScreen()
 
 
                     elif triple > single and triple > double:
                         print("triple blink detected")
                         timeDifferenceList = timeDifferenceList[:-1]
                         print("the current list is", *timeDifferenceList)
+                        altTab()
 
                     else:
                         print("unexpected combo, unsure of type")
@@ -252,3 +259,9 @@ while True:
 # do a bit of cleanup
 cv2.destroyAllWindows()
 vs.stop()
+
+
+
+
+
+
