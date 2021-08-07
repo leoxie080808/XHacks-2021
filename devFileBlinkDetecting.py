@@ -1,4 +1,5 @@
 from scipy.spatial import distance as dist
+
 from imutils.video import VideoStream
 from imutils import face_utils
 
@@ -9,16 +10,22 @@ import dlib
 import cv2
 import sys
 
+
 import time
 
 
 def eye_aspect_ratio(eye): 
     aPoint = dist.euclidean(eye[1], eye[5])
     bPoint = dist.euclidean(eye[2], eye[4])
+
+   
     cPoint = dist.euclidean(eye[0], eye[3])
 
     aspectRatio = (aPoint + bPoint) / (2.0 * cPoint)
+    #(aPoint)
     return aspectRatio
+
+
 
 
 
@@ -42,6 +49,8 @@ lastBlinkTime = 0.0
 predictor_path = "shape_predictor_68_face_landmarks - Copy.dat"
 
 
+
+
 # initialize dlib's face detector
 print("[INFO]loading facial landmark predictor...")
 detector = dlib.get_frontal_face_detector()
@@ -54,14 +63,19 @@ predictor = dlib.shape_predictor(predictor_path)
 # start the video stream thread
 print("[INFO] starting video stream thread...")
 
+#vs = FileVideoStream(args["video"]).start()
+#fileStream = True
 vs = VideoStream(src=0).start()
+# vs = VideoStream(usePiCamera=True).start()
 fileStream = False
 time.sleep(1.0)
 
 
+#create list to store the time stamps and blink id?
+
 
 # loop over frames from the video stream
-while True: 
+while True:  
     if fileStream and not vs.more():
         break  # grab the frame from the threaded video file stream, resize it, and convert it to grayscale channels)
     frame = vs.read()
@@ -72,10 +86,11 @@ while True:
 
     # loop over the face detections
     for rect in rects:
-        # determine the facial landmarks for the face region, then convert the facial landmark (x, y)-coordinates to a NumPy array
+ 
         shape = predictor(gray, rect)
         shape = face_utils.shape_to_np(shape)
-        # extract the left and right eye coordinates, then use the coordinates to compute the eye aspect ratio for both eyes
+        # extract the left and right eye coordinates, then use the
+        # coordinates to compute the eye aspect ratio for both eyes
         leftEye = shape[lStart:lEnd]
         rightEye = shape[rStart:rEnd]
         leftEAR = eye_aspect_ratio(leftEye)
@@ -91,12 +106,29 @@ while True:
             counter +=1
 
 
+#need to compare the two values, current thread time, and the last thread time
         else:
             if counter >= eyeArConsecFrames:
-                blink += 1
-        counter = 0
+                #print(time.thread_time(), "blinked")
+                #if current - old is less than 0.5 seconds, that means two blinks happened in succession
+                if (float(time.thread_time())-lastBlinkTime) <= 0.4:
+                    print("detected a double at", time.thread_time())
+                    doubleBlink += 1
+                    lastBlinkTime = float(time.thread_time())
+                else:
+                    total +=1 #this means a regular single blink happened
+                    lastBlinkTime = float(time.thread_time())
+                    print("the last blink was at:", lastBlinkTime)
 
-            
+
+                counter = 0
+
+            # elif counter >= fastBlink:
+            #     totalFast +=1
+            #
+            #     counter = 0
+
+#try the time.thread_time
 
         cv2.putText(frame, "Blinks: {}".format(total), (10, 30),
                     cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
@@ -106,14 +138,14 @@ while True:
 
 
 
-
+        # show the frame
     cv2.imshow("Frame", frame)
     key = cv2.waitKey(1) & 0xFF
 
     # if the `q` key was pressed, break from the loop
     if key == ord("q"):
         break
-
+# do a bit of cleanup
 cv2.destroyAllWindows()
 vs.stop()
 
