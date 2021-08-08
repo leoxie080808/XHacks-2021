@@ -10,6 +10,9 @@ import pyautogui as gui
 import time
 
 firstValue = 0
+secondValue = 0
+doubleState = 0
+tripleState = 0
 
 
 def altTab():
@@ -28,16 +31,18 @@ def printScreen():
     gui.press("printscreen")
     notification.notify(title = "screenshot created", message = "screenshot taken!", timeout = 10)
 
-class ExampleWindow(QMainWindow):
+class firstWindow(QMainWindow):
     def __init__(self):
         QMainWindow.__init__(self)
 
         self.setMinimumSize(QSize(640, 140))
-        self.setWindowTitle("Combobox example")
+        self.setWindowTitle("double blink setting")
 
         centralWidget = QWidget(self)
+        lowerWideget = QWidget(self)
 
         self.setCentralWidget(centralWidget)
+
 
         # Create combobox and add items.
         self.comboBox = QComboBox(centralWidget)
@@ -54,20 +59,59 @@ class ExampleWindow(QMainWindow):
         print(self.comboBox.itemText(index))
         print(self.comboBox.itemData(index))
         firstValue = self.comboBox.itemData((index))
-        print("the value of the first window is:", firstValue)
 
-        if firstValue == 1:
-            printScreen()
-        elif firstValue == 2:
-            altTab()
-        else:
-            pass
+        doubleState = firstValue
+        print("the value of the first window is:", doubleState)
+
+        # if firstValue == 1:
+        #     return 1
+        # elif firstValue == 2:
+        #     return 2
+        # else:
+        #     pass
+
+class secondWindow(QMainWindow):
+    def __init__(self):
+        QMainWindow.__init__(self)
+
+        self.setMinimumSize(QSize(640, 140))
+        self.setWindowTitle("triple blink setting")
+
+        centralWidget = QWidget(self)
+        lowerWideget = QWidget(self)
+
+        self.setCentralWidget(centralWidget)
+
+
+        # Create combobox and add items.
+        self.comboBox = QComboBox(centralWidget)
+        self.comboBox.setGeometry(QRect(40, 40, 491, 31))
+        self.comboBox.setObjectName(("comboBox"))
+        self.comboBox.addItem('printscreen', 1)
+        self.comboBox.addItem("alt-tab", 2)
+        self.comboBox.addItem("scrolling up", 3)
+        self.comboBox.addItem("scrolling down", 4)
+
+        self.comboBox.activated.connect(self.handleActivated)
+
+    def handleActivated(self, index):
+        print(self.comboBox.itemText(index))
+        print(self.comboBox.itemData(index))
+        secondValue = self.comboBox.itemData((index))
+
+        tripleState = secondValue
+        print("the value of the second window is:", tripleState)
 
 
 
+app = QtWidgets.QApplication(sys.argv)
+mainWin = firstWindow()
+mainWin.show()
+anotherWin = secondWindow()
+anotherWin.show()
 
-if __name__ == "__main__":
-    app = QtWidgets.QApplication(sys.argv)
-    mainWin = ExampleWindow()
-    mainWin.show()
-    sys.exit( app.exec_() )
+print("the double value is ", doubleState)
+print("the triple value is ", tripleState)
+
+sys.exit( app.exec_() )
+
