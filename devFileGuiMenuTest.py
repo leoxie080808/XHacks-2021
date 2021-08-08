@@ -3,9 +3,30 @@ from PyQt5 import QtCore, QtWidgets
 from PyQt5.QtWidgets import QMainWindow, QLabel, QGridLayout, QWidget, QComboBox
 from PyQt5.QtCore import QSize, QRect
 
+#just for testing the value callback
+import keyboard
+from plyer import notification
+import pyautogui as gui
+import time
+
 firstValue = 0
 
 
+def altTab():
+    gui.keyDown('alt')
+    time.sleep(.23)
+    gui.press('tab')
+    time.sleep(.23)
+    gui.keyUp('alt')
+
+
+def scrollingDown():
+    print("scrolling down")
+    gui.scroll(2)
+
+def printScreen():
+    gui.press("printscreen")
+    notification.notify(title = "screenshot created", message = "screenshot taken!", timeout = 10)
 
 class ExampleWindow(QMainWindow):
     def __init__(self):
@@ -34,7 +55,14 @@ class ExampleWindow(QMainWindow):
         firstValue = self.comboBox.itemData((index))
         print("the value of the first window is:", firstValue)
 
-        
+        if firstValue == 1:
+            printScreen()
+        elif firstValue == 2: 
+            altTab()
+        else:
+            pass
+
+
 
 
 if __name__ == "__main__":
