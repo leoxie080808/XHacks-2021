@@ -1,95 +1,49 @@
-import PyQt5.QtWidgets
-from PyQt5.QtWidgets import QApplication, QLabel, QWidget, QPushButton, QVBoxLayout
-from PyQt5 import QtCore, QtGui, QtWidgets
-
-
-# actual gui part
-# init section
+from tkinter import ttk
+from tkinter import messagebox
+from tkinter import Tk
 
 
 
+root = Tk()
+
+root.geometry("400x400")
+#^ width - heghit window :D
+
+
+cmb = ttk.Combobox(root, width="10", values=("prova","ciao","come","stai"))
+#cmb = Combobox
+
+class TableDropDown(ttk.Combobox):
+    def __init__(self, parent):
+        self.current_table = tk.StringVar() # create variable for table
+        ttk.Combobox.__init__(self, parent)#  init widget
+        self.config(textvariable = self.current_table, state = "readonly", values = ["Customers", "Pets", "Invoices", "Prices"])
+        self.current(0) # index of values for current table
+        self.place(x = 50, y = 50, anchor = "w") # place drop down box 
+
+def checkcmbo():
+
+    if cmb.get() == "prova":
+        messagebox.showinfo("What user choose", "you choose prova")
+
+    elif cmb.get() == "ciao":
+        messagebox.showinfo("What user choose", "you choose ciao")
+
+    elif cmb.get() == "come":
+        messagebox.showinfo("What user choose", "you choose come")
+
+    elif cmb.get() == "stai":
+        messagebox.showinfo("What user choose", "you choose stai")
+
+    elif cmb.get() == "":
+        messagebox.showinfo("nothing to show!", "you have to be choose something")
 
 
 
 
-class Ui_MainWindow(object):
-    def setupUi(self, MainWindow):
-        MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(800, 600)
-        self.centralwidget = QtWidgets.QWidget(MainWindow)
-        self.centralwidget.setObjectName("centralwidget") #box on the left
-        self.comboX = QtWidgets.QComboBox(self.centralwidget)
-        self.comboX.setGeometry(QtCore.QRect(50, 120, 231, 121))
-        font = QtGui.QFont()
-        font.setPointSize(28)
-        self.comboX.setFont(font)
-        self.comboX.setObjectName("comboX")
-        self.comboX.addItem("")
-        self.comboX.addItem("")
+cmb.place(relx="0.1",rely="0.1")
 
-        self.comboY = QtWidgets.QComboBox(self.centralwidget) #box on the left
-        self.comboY.setGeometry(QtCore.QRect(470, 120, 231, 121))
-        font = QtGui.QFont()
-        font.setPointSize(28)
-        self.comboY.setFont(font)
-        self.comboY.setObjectName("comboY")
-        self.comboY.addItem("")
-        self.comboY.addItem("")
-        self.submit = QtWidgets.QPushButton(self.centralwidget)
-        self.submit.setGeometry(QtCore.QRect(290, 420, 221, 91))
-        font = QtGui.QFont()
-        font.setPointSize(22)
-        self.submit.setFont(font)
-        self.submit.setObjectName("submit")
+btn = ttk.Button(root, text="Get Value",command=checkcmbo)
+btn.place(relx="0.5",rely="0.1")
 
-        self.label = QtWidgets.QLabel(self.centralwidget)
-        self.label.setGeometry(QtCore.QRect(280, 290, 221, 81))
-        font = QtGui.QFont()
-        font.setPointSize(20)
-        self.label.setFont(font)
-        self.label.setObjectName("label")
-        MainWindow.setCentralWidget(self.centralwidget)
-        self.menubar = QtWidgets.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 800, 21))
-        self.menubar.setObjectName("menubar")
-        MainWindow.setMenuBar(self.menubar)
-        self.statusbar = QtWidgets.QStatusBar(MainWindow)
-        self.statusbar.setObjectName("statusbar")
-        MainWindow.setStatusBar(self.statusbar)
-
-        self.submit.clicked.connect(self.pressed)
-
-        self.retranslateUi(MainWindow)
-        QtCore.QMetaObject.connectSlotsByName(MainWindow)
-
-    def retranslateUi(self, MainWindow):
-        _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.comboX.setItemText(0, _translate("MainWindow", "0"))
-        self.comboX.setItemText(1, _translate("MainWindow", "1"))
-        self.comboY.setItemText(0, _translate("MainWindow", "0"))
-        self.comboY.setItemText(1, _translate("MainWindow", "1"))
-        self.submit.setText(_translate("MainWindow", "Submit"))
-        self.label.setText(_translate("MainWindow", "X XOR Y ="))
-
-    def pressed(self):
-        x = int(self.comboX.currentText())
-        y = int(self.comboY.currentText())
-        xor = (x and not y) or (not x and y)
-        if xor == True:
-            xor = 1
-        else:
-            xor = 0
-
-        self.label.setText("X XOR Y =  " + str(xor))
-
-
-
-if __name__ == "__main__":
-    import sys
-    app = QtWidgets.QApplication(sys.argv)
-    MainWindow = QtWidgets.QMainWindow()
-    ui = Ui_MainWindow()
-    ui.setupUi(MainWindow)
-    MainWindow.show()
-    sys.exit(app.exec_())
+root.mainloop()
