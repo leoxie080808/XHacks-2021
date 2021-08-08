@@ -3,6 +3,10 @@ from PyQt5 import QtCore, QtWidgets
 from PyQt5.QtWidgets import QMainWindow, QLabel, QGridLayout, QWidget, QComboBox
 from PyQt5.QtCore import QSize, QRect
 
+firstValue = 0
+
+
+
 class ExampleWindow(QMainWindow):
     def __init__(self):
         QMainWindow.__init__(self)
@@ -27,6 +31,11 @@ class ExampleWindow(QMainWindow):
     def handleActivated(self, index):
         print(self.comboBox.itemText(index))
         print(self.comboBox.itemData(index))
+        firstValue = self.comboBox.itemData((index))
+        print("the value of the first window is:", firstValue)
+
+        
+
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
