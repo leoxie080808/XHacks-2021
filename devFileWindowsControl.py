@@ -28,7 +28,11 @@ def altTab():
 
 def scrollingDown():
     print("scrolling down")
-    gui.scroll(2)
+    gui.scroll(-50)
+
+def scrollingUp():
+    print("scrolling up")
+    gui.scroll(50)
 
 def printScreen():
     gui.press("printscreen")
